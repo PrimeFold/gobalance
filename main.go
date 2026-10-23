@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"context"
 	"log"
 	"net"
@@ -86,7 +87,7 @@ func main(){
 	go func ()  {
 		metricsMux:= http.NewServeMux()
 
-		metricsMux.HandleFunc("/metrics",pool.ServeMetrics)
+		metricsMux.Handle("/metrics",promhttp.Handler())
 		log.Println("Prometheus metrics live on http://localhost:9090/metrics")
     	if err := http.ListenAndServe(":9090", metricsMux); err != nil {
     	    log.Printf("Metrics server error: %v\n", err)

@@ -30,6 +30,7 @@ func proxyConnection(clientConn net.Conn,pool *ServerPool){
 			clientConn.Close()
 			return
 		}
+
 		ctx,cancel:= context.WithTimeout(context.Background(),1*time.Second)
 
 		var dialer net.Dialer
@@ -44,24 +45,25 @@ func proxyConnection(clientConn net.Conn,pool *ServerPool){
 		
 		pool.IncrementFailedDials()
 		target.SetAlive(false)
-
-		log.Printf("Server %s marked as Dead as it didn't respond within 1 Second",target.URL.Host)
-
-		if targetConn == nil{ //If Connection not open 
-			clientConn.Close()
-			return
-		}
-
-
-		//If server answers , we clean up and increase connection count on that server..
-		target.IncrementConnectionCount()
-		defer target.DecrementConnectionCount()
-
-		//Making sure backend and client closes connection after this function exits..
-		defer targetConn.Close()
-		defer clientConn.Close()
-
+		log.Printf("Backend %s dial failed: %v", target.URL.Host, err)
+		
 	}
+
+	log.Printf("Server %s marked as Dead as it didn't respond within 1 Second",target.URL.Host)
+	
+	if targetConn == nil{ //If connection from backend couldn't be made so its nil..
+		clientConn.Close()
+		return
+	}
+
+	//If server answers , we clean up and increase connection count on that server..
+	target.IncrementConnectionCount()
+	defer target.DecrementConnectionCount()
+
+	//Making sure backend and client closes connection after this function exits..
+	defer targetConn.Close()
+	defer clientConn.Close()
+
 
 	var wg sync.WaitGroup
 
