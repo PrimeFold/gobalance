@@ -8,6 +8,9 @@ A concurrent, low-latency Layer 4 TCP load balancer built from scratch in Go, de
 * **Heap Footprint:** ~18.8 MB flat heap allocation under load via zero-allocation buffer pooling (`sync.Pool`).
 * **Concurrency Safety:** Certified with ThreadSanitizer (`go test -race`).
 
+BenchmarkStandardCopy-6          4306077       270.2 ns/op      1120 B/op     3 allocs/op
+BenchmarkPooledCopy-6           47481747        26.02 ns/op         0 B/op     0 allocs/op
+
 ## 🛠 Architectural Features
 
 ### 1. Zero-Allocation Socket Streaming (Layer 4)
