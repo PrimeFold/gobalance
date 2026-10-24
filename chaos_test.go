@@ -83,7 +83,6 @@ func TestOutageFunction(t *testing.T){
 	}
 
 	
-	
 }
 
 

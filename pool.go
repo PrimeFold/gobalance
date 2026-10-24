@@ -31,7 +31,7 @@ func (b *Backend) SetAlive(alive bool) {
 
 	b.Alive = alive
 	if alive {
-		metricBackendAlive.WithLabelValues(b.URL.Host).Set(1)
+		metricBackendAlive.WithLabelValues(b.URL.Host).Set(1) 
 	} else {
 		metricBackendAlive.WithLabelValues(b.URL.Host).Set(0)
 	}
